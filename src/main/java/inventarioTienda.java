@@ -72,5 +72,17 @@ public class inventarioTienda {
     }
 
     //Función de matriz productos.
+    public static Object[][] inventario(){
+        Object[][] inventario = new Object[10][3];
+        return inventario;
+    }
+
+    //Función agregar productos.
+    //Función verificar si el producto existe.
+    //Función agregar unidades en caso de que el producto ya exista.
+    //Función restar unidades de productos. *qué pasa si elimino uno que no existe.
+    //Función de, si se restan todas las unidades, eliminar el producto.
+    //Función de consultar disponibilidad.
+    //Función de mostrar todos los productos (listar).
 
 }
