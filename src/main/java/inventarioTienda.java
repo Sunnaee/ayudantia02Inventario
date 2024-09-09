@@ -2,13 +2,77 @@ import java.util.Scanner; //se importa el Scanner
 
 public class inventarioTienda {
     public static void main(String[] args) {
-        menu();
+        menu(inventario());
     }
 
     //Función escáner.
     public static Scanner scanner(){
         return new Scanner(System.in);
     }
+
+    //Función de matriz productos.
+    public static Object[][] inventario(){
+        Object[][] inventario = new Object[10][3];
+        return inventario;
+    }
+
+    //Función verificar si el producto existe.
+    public static boolean existeProducto(Object[][] inventario, int idProducto){
+        for(int i=0;i<inventario.length;i++){
+            if((Integer)inventario[i][0] == idProducto){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //Función agregar unidades en caso de que el producto ya exista.
+    public static Object[][] agregarUnidades(Object[][] inventario, int idProducto, int unidadesProducto){
+        for(int i=0;i<inventario.length;i++){
+            if((Integer)inventario[i][0] == idProducto){
+                inventario[i][2] = (Integer)inventario[i][2] + unidadesProducto;
+                return inventario;
+            }
+        }
+        return inventario;
+    }
+
+    //Función para guardar un nuevo producto.
+    public static Object[][] nuevoProducto(Object[][] inventario, int idProducto, String nombreProducto, int unidadesProducto){
+        for(int i=0;i< inventario().length;i++){
+            if(inventario[i][0] == null){
+                inventario[i][0] = idProducto;
+                inventario[i][1] = nombreProducto;
+                inventario[i][2] = unidadesProducto;
+                break;
+            }
+        }
+        return inventario;
+    }
+
+    //Función para leer los datos del producto.
+    public static void datosProducto(Object[][] inventario, int idProducto){
+        String nombreProducto = scanner().next();
+        int unidadesProducto = scanner().nextInt();
+        nuevoProducto(inventario, idProducto, nombreProducto, unidadesProducto);
+    }
+
+    //Función agregar productos.
+    public static Object[][] agregarProducto(Object[][] inventario, int idProducto){
+        if(existeProducto(inventario, idProducto)){
+            System.out.print("El producto ya existe, ¿cuántas unidades desea agregar?: ");
+            int unidadesProducto = scanner().nextInt();
+            agregarUnidades(inventario, idProducto, unidadesProducto);
+        } else {
+            datosProducto(inventario, idProducto);
+        }
+        return inventario;
+    }
+
+    //Función restar unidades de productos. *qué pasa si resto a uno que no existe o resto más de los que hay.
+    //Función de, si se restan todas las unidades, eliminar el producto.
+    //Función de consultar disponibilidad. Devuelve cantidad disponible.
+    //Función de mostrar todos los productos (listar).
 
     //Función imprimir opciones del menú.
     public static void mostrarOpciones(){
@@ -42,8 +106,23 @@ public class inventarioTienda {
     }
 
     //Función de ejecutar las opciones del menú.
-    public static void ejecutarOpcion(int opcion){
+    public static void ejecutarOpcion(int opcion, Object[][] inventario){
         System.out.println("elección: " + opcion); //provisional hasta que existan los demás métodos.
+        if(opcion == 1){
+            //agregar producto.
+            System.out.print("Ingrese el id del producto que desea agregar: ");
+            int idProducto = scanner().nextInt();
+            agregarProducto(inventario, idProducto);
+        } else if(opcion == 2){
+            //restar producto.
+        } else if(opcion == 3){
+            //disponibilidad producto.
+        } else if(opcion == 4){
+            //listar productos.
+        } else if(opcion == 5){
+            //salir
+            System.out.println("A continuación, confirme su salida."); //se ejecutará el continuar en el menú.
+        }
     }
 
     //Función booleana de continuar para el menú.
@@ -59,30 +138,16 @@ public class inventarioTienda {
     }
 
     //Función menú.
-    public static void menu(){
+    public static void menu(Object[][] inventario){
         boolean continuar = true;
         while(continuar){
             mostrarOpciones();
-            ejecutarOpcion(leerOpcion());
+            ejecutarOpcion(leerOpcion(), inventario);
             System.out.print("¿Desea realizar otra operación? (1 = Sí ; 2 = No): ");
             int respuesta = scanner().nextInt();
             continuar = continuarMenu(respuesta);
         }
         scanner().close();
     }
-
-    //Función de matriz productos.
-    public static Object[][] inventario(){
-        Object[][] inventario = new Object[10][3];
-        return inventario;
-    }
-
-    //Función agregar productos.
-    //Función verificar si el producto existe.
-    //Función agregar unidades en caso de que el producto ya exista.
-    //Función restar unidades de productos. *qué pasa si elimino uno que no existe.
-    //Función de, si se restan todas las unidades, eliminar el producto.
-    //Función de consultar disponibilidad.
-    //Función de mostrar todos los productos (listar).
 
 }
