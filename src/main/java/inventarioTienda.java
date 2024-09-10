@@ -33,7 +33,7 @@ public class inventarioTienda {
         for(int i=0;i<inventario.length;i++){
             if((Integer)inventario[i][0] == idProducto){
                 inventario[i][2] = (Integer)inventario[i][2] + unidadesProducto;
-                return inventario;
+                break;
             }
         }
         return inventario;
@@ -52,7 +52,22 @@ public class inventarioTienda {
         return inventario;
     }
 
-    //Función para leer los datos del producto.
+    //Funcion para pedir el ID del producto.
+    public static int pedirID() {
+        int idProducto = 0;
+        while (true) {
+            try {
+                System.out.print("Ingrese el id del producto: ");
+                idProducto = scanner().nextInt();
+                break;
+            } catch(Exception InputMismatchException){
+                System.out.print("Entrada no válida. Ingrese un número: ");
+            }
+        }
+        return idProducto;
+    }
+
+    //Función para leer los datos del producto. *modificar a pedir unidades y nombre por separado.
     public static void datosProducto(Object[][] inventario, int idProducto){
         System.out.print("Ingrese el nombre del producto: ");
         String nombreProducto = scanner().nextLine();
@@ -73,8 +88,53 @@ public class inventarioTienda {
         return inventario;
     }
 
-    //Función restar unidades de productos. *qué pasa si resto a uno que no existe o resto más de los que hay.
+    //Función para restar unidades.
+    public static Object[][] restarUnidades(Object[][] inventario, int idProducto, int unidadesProducto, int fila){
+        inventario[fila][2] = (Integer) inventario[fila][2] - unidadesProducto;
+        System.out.println("Se han restado "+unidadesProducto+" unidades del producto con ID "+idProducto+" correctamente.");
+        return inventario;
+    }
+
     //Función de, si se restan todas las unidades, eliminar el producto.
+    public static Object[][] eliminarProducto(Object[][] inventario, int idProducto){
+        for(int i=0;i<inventario.length;i++){
+            if((Integer) inventario[i][0] == idProducto){
+                inventario[i][0] = null;
+                inventario[i][1] = null;
+                inventario[i][2] = null;
+                break;
+            }
+        }
+        System.out.println("Se ha eliminado el producto correctamente.");
+        return inventario;
+    }
+
+    //Función restar unidades de productos. *qué pasa si resto a uno que no existe o resto más de los que hay.
+    public static Object[][] restarProductos(Object[][] inventario, int idProducto){
+        if(existeProducto(inventario,idProducto)){
+            System.out.print("¿Cuántas unidades desea restar?: ");
+            int unidadesProducto = scanner().nextInt();
+            for(int i=0;i<inventario.length;i++){
+                if((Integer) inventario[i][0] == idProducto){
+                    if(unidadesProducto > (Integer) inventario[i][2]){
+                        System.out.println("No se pueden restar más unidades de las que existen.");
+                        break;
+                    } else if(unidadesProducto < (Integer) inventario[i][2]){
+                        restarUnidades(inventario,idProducto,unidadesProducto,i);
+                        break;
+                    } else if(unidadesProducto == (Integer) inventario[i][2]){
+                        System.out.println("Se eliminaron todas las unidades. Se eliminará el producto completo.");
+                        eliminarProducto(inventario,idProducto);
+                        break;
+                    }
+                }
+            }
+        } else {
+            System.out.println("El producto no existe en el inventario.");
+        }
+        return inventario;
+    }
+
     //Función de consultar disponibilidad. Devuelve cantidad disponible.
 
     //Función de mostrar todos los productos (listar).
@@ -82,6 +142,9 @@ public class inventarioTienda {
         System.out.println("LISTADO DE PRODUCTOS");
         System.out.println("===================================");
         for(int i=0;i<inventario.length;i++){
+            if(inventario[i][0] == null){
+                continue;
+            }
             System.out.println("『 "+(i+1)+".- ID: "+inventario[i][0]+" | Nombre: "+inventario[i][1]+" | Unidades disponibles: "+inventario[i][2]+" 』");
         }
     }
@@ -117,21 +180,14 @@ public class inventarioTienda {
 
     //Función de ejecutar las opciones del menú.
     public static void ejecutarOpcion(Object[][] inventario, int opcion){
-        System.out.println("elección: " + opcion); //provisional hasta que existan los demás métodos.
-        if(opcion == 1){
-            //agregar producto.
-            System.out.print("Ingrese el id del producto que desea agregar: ");
-            int idProducto = scanner().nextInt();
-            agregarProducto(inventario, idProducto);
-        } else if(opcion == 2){
-            //restar producto.
-        } else if(opcion == 3){
-            //disponibilidad producto.
-        } else if(opcion == 4){
-            //listar productos.
+        if(opcion == 1){ //agregar producto.
+            agregarProducto(inventario, pedirID());
+        } else if(opcion == 2){ //restar producto.
+            restarProductos(inventario,pedirID());
+        } else if(opcion == 3){ //disponibilidad producto.
+        } else if(opcion == 4){ //listar productos.
             listarProductos(inventario);
-        } else if(opcion == 5){
-            //salir
+        } else if(opcion == 5){ //salir
             System.out.print("A continuación, confirme su salida. "); //se ejecutará el continuar en el menú.
         }
     }
