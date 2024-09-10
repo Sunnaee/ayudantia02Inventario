@@ -2,7 +2,7 @@ import java.util.Scanner; //se importa el Scanner
 
 public class inventarioTienda {
     public static void main(String[] args) {
-        menu(inventario());
+        menu(crearInventario());
     }
 
     //Función escáner.
@@ -11,7 +11,7 @@ public class inventarioTienda {
     }
 
     //Función de matriz productos.
-    public static Object[][] inventario(){
+    public static Object[][] crearInventario(){
         Object[][] inventario = new Object[10][3];
         return inventario;
     }
@@ -19,7 +19,9 @@ public class inventarioTienda {
     //Función verificar si el producto existe.
     public static boolean existeProducto(Object[][] inventario, int idProducto){
         for(int i=0;i<inventario.length;i++){
-            if((Integer)inventario[i][0] == idProducto){
+            if(inventario[i][0] == null){
+                return false;
+            } else if((Integer)inventario[i][0] == idProducto){
                 return true;
             }
         }
@@ -39,7 +41,7 @@ public class inventarioTienda {
 
     //Función para guardar un nuevo producto.
     public static Object[][] nuevoProducto(Object[][] inventario, int idProducto, String nombreProducto, int unidadesProducto){
-        for(int i=0;i< inventario().length;i++){
+        for(int i=0;i< inventario.length;i++){
             if(inventario[i][0] == null){
                 inventario[i][0] = idProducto;
                 inventario[i][1] = nombreProducto;
@@ -52,7 +54,9 @@ public class inventarioTienda {
 
     //Función para leer los datos del producto.
     public static void datosProducto(Object[][] inventario, int idProducto){
-        String nombreProducto = scanner().next();
+        System.out.print("Ingrese el nombre del producto: ");
+        String nombreProducto = scanner().nextLine();
+        System.out.print("Ingrese las unidades del producto: ");
         int unidadesProducto = scanner().nextInt();
         nuevoProducto(inventario, idProducto, nombreProducto, unidadesProducto);
     }
@@ -72,7 +76,15 @@ public class inventarioTienda {
     //Función restar unidades de productos. *qué pasa si resto a uno que no existe o resto más de los que hay.
     //Función de, si se restan todas las unidades, eliminar el producto.
     //Función de consultar disponibilidad. Devuelve cantidad disponible.
+
     //Función de mostrar todos los productos (listar).
+    public static void listarProductos(Object[][] inventario){
+        System.out.println("LISTADO DE PRODUCTOS");
+        System.out.println("===================================");
+        for(int i=0;i<inventario.length;i++){
+            System.out.println("『 "+(i+1)+".- ID: "+inventario[i][0]+" | Nombre: "+inventario[i][1]+" | Unidades disponibles: "+inventario[i][2]+" 』");
+        }
+    }
 
     //Función imprimir opciones del menú.
     public static void mostrarOpciones(){
@@ -87,26 +99,24 @@ public class inventarioTienda {
 
     //Función de leer la opción del menú.
     public static int leerOpcion(){
-        int opcion;
+        int opcion = 0;
         while (true) {
-            Scanner scanner = scanner();
-            if (scanner.hasNextInt()) {
-                opcion = scanner.nextInt();
-                if (opcion >= 1 && opcion <= 5) {
+            try {
+                opcion = scanner().nextInt();
+                if ((opcion >= 1) && (opcion <= 5)) {
                     break;
                 } else {
-                    System.out.print("Opción inválida. Intente nuevamente: ");
+                    System.out.print("Opción inválida. Inténtelo nuevamente: ");
                 }
-            } else {
+            } catch(Exception InputMismatchException){
                 System.out.print("Entrada no válida. Ingrese un número: ");
-                scanner.next();
             }
         }
         return opcion;
     }
 
     //Función de ejecutar las opciones del menú.
-    public static void ejecutarOpcion(int opcion, Object[][] inventario){
+    public static void ejecutarOpcion(Object[][] inventario, int opcion){
         System.out.println("elección: " + opcion); //provisional hasta que existan los demás métodos.
         if(opcion == 1){
             //agregar producto.
@@ -119,9 +129,10 @@ public class inventarioTienda {
             //disponibilidad producto.
         } else if(opcion == 4){
             //listar productos.
+            listarProductos(inventario);
         } else if(opcion == 5){
             //salir
-            System.out.println("A continuación, confirme su salida."); //se ejecutará el continuar en el menú.
+            System.out.print("A continuación, confirme su salida. "); //se ejecutará el continuar en el menú.
         }
     }
 
@@ -142,7 +153,8 @@ public class inventarioTienda {
         boolean continuar = true;
         while(continuar){
             mostrarOpciones();
-            ejecutarOpcion(leerOpcion(), inventario);
+            int opcion = leerOpcion();
+            ejecutarOpcion(inventario, opcion);
             System.out.print("¿Desea realizar otra operación? (1 = Sí ; 2 = No): ");
             int respuesta = scanner().nextInt();
             continuar = continuarMenu(respuesta);
