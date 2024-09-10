@@ -125,10 +125,8 @@ public class inventarioTienda {
     }
 
     //Función restar unidades de productos. *qué pasa si resto a uno que no existe o resto más de los que hay.
-    public static Object[][] restarProductos(Object[][] inventario, int idProducto){
+    public static Object[][] restarProductos(Object[][] inventario, int idProducto, int unidadesProducto){
         if(existeProducto(inventario,idProducto)){
-            System.out.print("¿Cuántas unidades desea restar?");
-            int unidadesProducto = pedirUnidades();
             int fila = obtenerFila(inventario,idProducto);
             if(unidadesProducto > (Integer) inventario[fila][2]){
                 System.out.println("No se pueden restar más unidades de las que existen.");
@@ -198,9 +196,11 @@ public class inventarioTienda {
     //Función de ejecutar las opciones del menú.
     public static void ejecutarOpcion(Object[][] inventario, int opcion){
         if(opcion == 1){ //agregar producto.
-            agregarProducto(inventario, pedirID());
+            System.out.print("Ejecutando solicitudes para agregar producto...");
+            agregarProducto(inventario,pedirID());
         } else if(opcion == 2){ //restar producto.
-            restarProductos(inventario,pedirID());
+            System.out.print("Ejecutando solicitudes para restar unidades de producto...");
+            restarProductos(inventario,pedirID(),pedirUnidades());
         } else if(opcion == 3){ //disponibilidad producto.
             System.out.println("Las unidades disponibles del producto son: "+disponibilidadProducto(inventario,pedirID()));
         } else if(opcion == 4){ //listar productos.
